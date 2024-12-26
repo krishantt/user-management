@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { ActionFunction, LoaderFunction, redirect } from "@vercel/remix";
+import { ActionFunction, LoaderFunction, redirect, json } from "@vercel/remix";
 import {
   validateEmail,
   validateName,
@@ -42,13 +42,13 @@ export const action: ActionFunction = async ({ request }) => {
     typeof email !== "string" ||
     typeof password !== "string"
   ) {
-    return Response.json(
+    return json(
       { error: `Invalid Form Data`, form: action },
       { status: 400 }
     );
   }
   if (action === "register" && typeof name !== "string") {
-    return Response.json(
+    return json(
       { error: `Invalid Form Data`, form: action },
       { status: 400 }
     );
@@ -64,7 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
       : {}),
   };
   if (Object.values(errors).some(Boolean)) {
-    return Response.json(
+    return json(
       { errors, fields: { email, password, name, dob }, form: action },
       { status: 400 }
     );

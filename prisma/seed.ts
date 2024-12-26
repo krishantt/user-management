@@ -15,7 +15,7 @@ const seedData = [
     name: "Test User",
     email: "test@test.com",
     dob: "2000-01-01",
-    password: "test",
+    password: "tester",
   },
 ];
 

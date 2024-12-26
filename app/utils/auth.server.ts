@@ -1,6 +1,6 @@
 import type { RegisterForm, LoginForm } from "./types.server";
 import { prisma } from "./prisma.server";
-import { redirect, createCookieSessionStorage } from "@vercel/remix";
+import { redirect, createCookieSessionStorage, json } from "@vercel/remix";
 import { createUser } from "./user.server";
 import bcrypt from "bcryptjs";
 
@@ -34,7 +34,7 @@ export async function createUserSession(userId: string, redirectTo: string) {
 export async function registerUser(user: RegisterForm) {
   const exists = await prisma.user.count({ where: { email: user.email } });
   if (exists) {
-    return Response.json(
+    return json(
       { error: `User already exists with that email` },
       { status: 400 }
     );
@@ -42,7 +42,7 @@ export async function registerUser(user: RegisterForm) {
 
   const newUser = await createUser(user);
   if (!newUser) {
-    return Response.json(
+    return json(
       {
         error: `Failed to create user.`,
         fields: { email: user.email, password: user.password },
@@ -57,7 +57,7 @@ export async function loginUser({ email, password }: LoginForm) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return Response.json({ error: `Incorrect Login` }, { status: 400 });
+    return json({ error: `Incorrect Login` }, { status: 400 });
   }
 
   return createUserSession(user.id, "/dashboard");
