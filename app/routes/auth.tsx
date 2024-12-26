@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import { DatePicker } from "~/components/date-picker";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -50,12 +51,28 @@ function SignUp() {
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="space-y-1">
-          <Label htmlFor="current">Current password</Label>
-          <Input id="current" type="password" />
+          <Label htmlFor="name">Full Name</Label>
+          <Input id="name" placeholder="John Doe" />
         </div>
         <div className="space-y-1">
-          <Label htmlFor="new">New password</Label>
-          <Input id="new" type="password" />
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" placeholder="johndoe@gmail.com" />
+        </div>
+        <div className="flex flex-col space-y-1">
+          <Label htmlFor="email">Date of Birth</Label>
+          <DatePicker />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="password">Password</Label>
+          <Input id="password" type="password" placeholder="password" />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="password-again">Password Again</Label>
+          <Input
+            id="password-again"
+            type="password"
+            placeholder="password-again"
+          />
         </div>
       </CardContent>
       <CardFooter>
@@ -75,7 +92,6 @@ export const meta: MetaFunction = () => {
 export default function Auth() {
   return (
     <div className="flex h-screen items-center justify-center">
-      {" "}
       <Tabs defaultValue="login" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Login</TabsTrigger>
