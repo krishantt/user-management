@@ -48,7 +48,7 @@ export default function Index() {
 
 const resources = [
   {
-    href: "/auth",
+    href: "/login",
     text: "Login/ Signup",
     icon: <LogIn />,
   },
