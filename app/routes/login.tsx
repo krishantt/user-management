@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@vercel/remix";
 import { useEffect, useRef, useState } from "react";
 import { FormField } from "~/components/form-field";
 import { getUser, loginUser, registerUser } from "~/utils/auth.server";
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { ActionFunction, LoaderFunction, redirect } from "@remix-run/node";
+import { ActionFunction, LoaderFunction, redirect } from "@vercel/remix";
 import {
   validateEmail,
   validateName,

@@ -1,5 +1,5 @@
-import type { MetaFunction } from "@remix-run/node";
-import { LoaderFunction } from "@remix-run/node";
+import type { MetaFunction } from "@vercel/remix";
+import { LoaderFunction } from "@vercel/remix";
 import { requireUserId } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {

@@ -1,6 +1,6 @@
 import type { RegisterForm, LoginForm } from "./types.server";
 import { prisma } from "./prisma.server";
-import { redirect, createCookieSessionStorage } from "@remix-run/node";
+import { redirect, createCookieSessionStorage } from "@vercel/remix";
 import { createUser } from "./user.server";
 import bcrypt from "bcryptjs";
 
