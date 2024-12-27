@@ -8,7 +8,7 @@ interface FormFieldProps {
   placeholder?: string;
   type?: string;
   value: string;
-  onChange?: (...args: any) => any;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
 
