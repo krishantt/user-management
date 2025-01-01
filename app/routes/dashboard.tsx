@@ -102,7 +102,7 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="flex h-full items-center justify-center">
-        <Card className="w-max">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Update your profile</CardTitle>
             <CardDescription>

@@ -34,7 +34,7 @@ export function UpdateForm({
     }));
   };
   return (
-    <form method="POST" className="grid gap-4 py-4">
+    <form method="POST" className="grid gap-4 pt-4">
       {message && (
         <p
           className={cn("text-sm", success ? "text-green-500" : "text-red-500")}
@@ -43,9 +43,7 @@ export function UpdateForm({
         </p>
       )}
       <div className="grid grid-cols-4 items-center gap-4">
-        <label htmlFor="name" className="text-right">
-          Name
-        </label>
+        <label htmlFor="name">Name</label>
         <input
           id="name"
           name="name"
@@ -55,9 +53,7 @@ export function UpdateForm({
         />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <label htmlFor="email" className="text-right">
-          Email
-        </label>
+        <label htmlFor="email">Email</label>
         <input
           id="email"
           name="email"
@@ -67,9 +63,7 @@ export function UpdateForm({
         />
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
-        <label htmlFor="dob" className="text-right">
-          DOB
-        </label>
+        <label htmlFor="dob">DOB</label>
         <input
           id="dob"
           name="dob"
@@ -80,9 +74,7 @@ export function UpdateForm({
       </div>
       {showRole && (
         <div className="grid grid-cols-4 items-center gap-4">
-          <label htmlFor="role" className="text-right">
-            Role
-          </label>
+          <label htmlFor="role">Role</label>
           <Select
             value={userState.role}
             onValueChange={(value) => {
@@ -105,7 +97,14 @@ export function UpdateForm({
       <input type="hidden" name="id" value={userState.id} />
       <input type="hidden" name="role" value={userState.role} />
       <input type="hidden" name="_action" value="update" />
-      <Button type="submit">Save changes</Button>
+      <div className="flex flex-col items-end w-full">
+        <Button
+          type="submit"
+          className="bg-blue-700 p-4 hover:bg-gray-100 hover:text-black hover:border-black hover:border-2 "
+        >
+          Save changes
+        </Button>
+      </div>
     </form>
   );
 }

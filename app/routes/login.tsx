@@ -119,7 +119,7 @@ export default function Login() {
 
   return (
     <div className="flex gap-x-16 h-screen items-center justify-start">
-      <div className="px-16 text-4xl font-extrabold w-1/2 bg-black h-full flex flex-col items-start justify-center">
+      <div className="px-16 text-4xl font-extrabold w-1/2 bg-blue-700 h-full flex flex-col items-start justify-center">
         <h2 className="leading text-2xl text-white">Welcome to</h2>
         <h1 className="text-4xl font-semibold text-white">
           User Management Portal
@@ -181,7 +181,7 @@ export default function Login() {
                   />
                 </>
               )}
-              <Button type="submit" name="_action" value={action}>
+              <Button type="submit" name="_action" value={action} className="bg-blue-700">
                 {action === "login" ? "Sign In" : "Sign Up"}
               </Button>
             </form>
