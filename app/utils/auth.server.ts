@@ -1,7 +1,7 @@
 import type { RegisterForm, LoginForm } from "./types.server";
 import { prisma } from "./prisma.server";
 import { redirect, createCookieSessionStorage, json } from "@vercel/remix";
-import { createUser } from "./user.server";
+import { create_user } from "./user.server";
 import bcrypt from "bcryptjs";
 
 const sessionSecret = process.env.SESSION_SECRET;
@@ -40,7 +40,7 @@ export async function registerUser(user: RegisterForm) {
     );
   }
 
-  const newUser = await createUser(user);
+  const newUser = await create_user(user);
   if (!newUser) {
     return json(
       {

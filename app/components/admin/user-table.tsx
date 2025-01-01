@@ -8,10 +8,10 @@ import {
   TableRow,
 } from "~/components/ui/table";
 
-
 import { Button } from "~/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { Trash, Pencil } from "lucide-react";
 import { User } from "~/types/user";
+import { Link } from "@remix-run/react";
 
 export function UserTable({ users }: { users: User[] }) {
   return (
@@ -37,19 +37,24 @@ export function UserTable({ users }: { users: User[] }) {
             <TableCell>{user.dob.toISOString().split("T")[0]}</TableCell>
             <TableCell>{user.createdAt.toISOString().split("T")[0]}</TableCell>
             <TableCell>{user.updatedAt.toISOString().split("T")[0]}</TableCell>
-            <TableCell>{user.role}</TableCell>
-            <TableCell className="flex gap-x-2">
+            <TableCell className="capitalize">
+              {user.role.toLowerCase()}
+            </TableCell>
+            <TableCell className="flex gap-x-2 items-end">
               {user.role !== "ADMIN" && (
                 <>
-                  <Button variant="outline" size="icon">
-                    <Pencil />
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                  >
-                    <Trash />
-                  </Button>
+                  <Link to={`/admin/edit/${user.id}`}>
+                    <Button variant="outline" size="icon">
+                      <Pencil />
+                    </Button>
+                  </Link>
+                  <form method="POST">
+                    <input type="hidden" name="_action" value="delete" />
+                    <input type="hidden" name="id" value={user.id} />
+                    <Button variant="destructive" size="icon" type="submit">
+                      <Trash />
+                    </Button>
+                  </form>
                 </>
               )}
             </TableCell>
@@ -58,7 +63,7 @@ export function UserTable({ users }: { users: User[] }) {
       </TableBody>
       <TableFooter>
         <TableRow>
-          <TableCell colSpan={3}>Total Users</TableCell>
+          <TableCell colSpan={7}>Total Users</TableCell>
           <TableCell className="text-right">{users.length}</TableCell>
         </TableRow>
       </TableFooter>

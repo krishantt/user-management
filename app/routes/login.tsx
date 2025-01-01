@@ -16,6 +16,7 @@ import {
   validateEmail,
   validateName,
   validatePassword,
+  validateDob,
 } from "~/utils/validators.server";
 import { useActionData } from "@remix-run/react";
 
@@ -42,40 +43,33 @@ export const action: ActionFunction = async ({ request }) => {
     typeof email !== "string" ||
     typeof password !== "string"
   ) {
-    return json(
-      { error: `Invalid Form Data`, form: action },
-      { status: 400 }
-    );
+    return json({ error: `Invalid Form Data`, form: action }, { status: 400 });
   }
-  if (action === "register" && typeof name !== "string") {
-    return json(
-      { error: `Invalid Form Data`, form: action },
-      { status: 400 }
-    );
+  if (
+    action === "register" &&
+    typeof name !== "string" &&
+    typeof dob !== "string"
+  ) {
+    return json({ error: `Invalid Form Data`, form: action }, { status: 400 });
   }
-  const errors = {
-    email: validateEmail(email),
-    password: validatePassword(password),
-    ...(action === "register"
-      ? {
-          name: validateName((name as string) || ""),
-          dob: dob ? null : "Date of Birth is required",
-        }
-      : {}),
-  };
-  if (Object.values(errors).some(Boolean)) {
-    return json(
-      { errors, fields: { email, password, name, dob }, form: action },
-      { status: 400 }
-    );
+
+  name = name as string;
+  dob = dob as string;
+  const error =
+    action === "login"
+      ? validateEmail(email) || validatePassword(password)
+      : validateEmail(email) ||
+        validatePassword(password) ||
+        validateName(name) ||
+        validateDob(dob);
+  if (error) {
+    return json({ error: error }, { status: 400 });
   }
 
   switch (action) {
     case "login":
       return await loginUser({ email, password });
     case "signup": {
-      dob = dob as string;
-      name = name as string;
       return await registerUser({ email, password, name, dob });
     }
   }
@@ -84,15 +78,14 @@ export const action: ActionFunction = async ({ request }) => {
 export default function Login() {
   const actionData = useActionData<typeof action>();
   const firstLoad = useRef(true);
-  const [errors, setErrors] = useState(actionData?.errors || {});
   const [formError, setFormError] = useState(actionData?.error || "");
 
   const [action, setAction] = useState("login");
   const [formData, setFormData] = useState({
-    email: actionData?.fields?.email || "",
-    password: actionData?.fields?.password || "",
-    name: actionData?.fields?.name || "",
-    dob: actionData?.fields?.dob || "",
+    email: "",
+    password: "",
+    name: "",
+    dob: "",
   });
 
   const handleInputChange = (
@@ -110,7 +103,6 @@ export default function Login() {
         name: "",
         dob: "",
       };
-      setErrors(newState);
       setFormError("");
       setFormData(newState);
     }
@@ -162,7 +154,6 @@ export default function Login() {
                 value={formData.email}
                 placeholder="johndoe@gmail.com"
                 onChange={(e) => handleInputChange(e, "email")}
-                error={errors.email}
               />
               <FormField
                 htmlFor="password"
@@ -171,7 +162,6 @@ export default function Login() {
                 placeholder="password"
                 value={formData.password}
                 onChange={(e) => handleInputChange(e, "password")}
-                error={errors.password}
               />
               {action === "signup" && (
                 <>
@@ -181,7 +171,6 @@ export default function Login() {
                     onChange={(e) => handleInputChange(e, "name")}
                     value={formData.name}
                     placeholder="John Doe"
-                    error={errors.name}
                   />
                   <FormField
                     htmlFor="dob"
@@ -189,7 +178,6 @@ export default function Login() {
                     placeholder="YYYY-MM-DD"
                     value={formData.dob}
                     onChange={(e) => handleInputChange(e, "dob")}
-                    error={errors.dob}
                   />
                 </>
               )}

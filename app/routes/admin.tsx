@@ -1,17 +1,10 @@
 import type { MetaFunction } from "@vercel/remix";
 import { LoaderFunction, ActionFunction, json } from "@vercel/remix";
 import { requireUserId, getUser, logout } from "~/utils/auth.server";
-import { delete_user, update_user } from "~/utils/user.server";
-import { useLoaderData, redirect, useActionData } from "@remix-run/react";
+import { get_all_users, delete_user, update_user } from "~/utils/user.server";
+import { useLoaderData, redirect, Outlet } from "@remix-run/react";
+import Admin from "~/components/pages/admin";
 import DashboardLayout from "~/components/layout";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { UpdateForm } from "~/components/admin/update-form";
 import {
   validateDob,
   validateName,
@@ -22,10 +15,10 @@ import {
 export const loader: LoaderFunction = async ({ request }) => {
   await requireUserId(request);
   const user = await getUser(request);
-  if (user?.role != "USER") {
-    throw redirect("/admin");
+  if (user?.role != "ADMIN") {
+    throw redirect("/dashboard");
   }
-  return { user };
+  return { user, allUsers: await get_all_users() };
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -39,10 +32,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (action === "update") {
     const id = formData.get("id");
     if (typeof id !== "string") {
-      return json(
-        { message: "Invalid Request", success: false },
-        { status: 400 }
-      );
+      return json({ error: "Invalid Request" }, { status: 400 });
     }
     const email = formData.get("email");
     const name = formData.get("name");
@@ -55,7 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
       typeof role !== "string"
     ) {
       return json(
-        { message: `Invalid Form Data`, success: false },
+        { error: `Invalid Form Data`, form: action },
         { status: 400 }
       );
     }
@@ -66,23 +56,16 @@ export const action: ActionFunction = async ({ request }) => {
       validateDob(dob) ||
       validateRole(role);
     if (error) {
-      return json({ message: "Invalid Data", success: false }, { status: 400 });
+      return json({ error }, { status: 400 });
     }
 
-    await update_user(id, { email, name, dob, role });
-    return json(
-      { message: "Profile Updated Sucessfully", success: true },
-      { status: 200 }
-    );
+    return await update_user(id, { email, name, dob, role });
   }
 
   if (action === "delete") {
     const id = formData.get("id");
     if (typeof id !== "string") {
-      return json(
-        { message: "Invalid Request", success: "False" },
-        { status: 400 }
-      );
+      return json({ error: "Invalid Request" }, { status: 400 });
     }
     await delete_user(id);
     return redirect("/dashboard");
@@ -91,32 +74,18 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Dashboard - User Management" },
+    { title: "Admin - User Management" },
     { name: "description", content: "Welcome to User Mangement!" },
   ];
 };
 
-export default function Dashboard() {
-  const { user } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>();
+export default function AdminPanel() {
+  const { allUsers } = useLoaderData<typeof loader>();
   return (
     <DashboardLayout>
       <div className="flex h-full items-center justify-center">
-        <Card className="w-max">
-          <CardHeader>
-            <CardTitle>Update your profile</CardTitle>
-            <CardDescription>
-              Please make sure to update with the correct information.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <UpdateForm
-              user={user}
-              message={actionData?.message}
-              success={actionData?.success}
-            />
-          </CardContent>
-        </Card>
+        <Admin users={allUsers} />
+        <Outlet />
       </div>
     </DashboardLayout>
   );
